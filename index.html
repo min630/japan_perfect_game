@@ -90,9 +90,9 @@ function endGame() {
   document.getElementById("options").innerHTML = "";
   document.getElementById("question").innerHTML = "遊戲結束 / Game Over";
   let msg = "";
-  if (score <= 14) msg = "加油呦！Good luck next time!";
-  else if (score <= 30) msg = "只差一點了！Almost there!";
-  else if (score <= 46) msg = "日本名產通！Japanese Specialty Expert!";
+  if (score <= 12) msg = "加油呦！Good luck next time!";
+  else if (score <= 25) msg = "只差一點了！Almost there!";
+  else if (score <= 36) msg = "日本名產通！Japanese Specialty Expert!";
   else msg = "會走路的百科全書就是你！You're a walking encyclopedia!";
   document.getElementById("result").textContent = msg;
 }
