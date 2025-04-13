@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>日本名產小遊戲</title>
+<style>
+body {
+  font-family: "Hiragino Kaku Gothic ProN", "Noto Sans TC", sans-serif;
+  background-image: url('https://www.transparenttextures.com/patterns/kimono.png');
+  background-color: #f9f3e3;
+  text-align: center;
+  padding: 20px;
+}
+h1 { font-size: 24px; }
+#question, #options, #score, #timer, #result { margin: 20px auto; }
+button {
+  font-size: 18px; margin: 10px; padding: 10px 20px;
+}
+#result {
+  font-weight: bold; font-size: 22px; color: #b33;
+}
+</style>
+</head>
+<body>
+<h1>日本47都道府縣特產小遊戲<br><span style="font-size: 18px;">Japanese Prefecture Specialty Quiz</span></h1>
+<div id="score">得分 / Score: 0</div>
+<div id="timer">剩餘時間 / Time Left: 90</div>
+<div id="question"></div>
+<div id="options"></div>
+<div id="result"></div>
+<script src="data.js"></script>
+<script>
+let score = 0;
+let timeLeft = 90;
+let interval;
+let keys = Object.keys(data);
+let currentPref = "";
+let correctAnswer = "";
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    let j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+function nextQuestion() {
+  currentPref = keys[Math.floor(Math.random() * keys.length)];
+  const correct = data[currentPref][Math.floor(Math.random() * 2)];
+  correctAnswer = correct;
+  let wrongOptions = [];
+  while (wrongOptions.length < 2) {
+    let wrongPref = keys[Math.floor(Math.random() * keys.length)];
+    if (wrongPref !== currentPref) {
+      let option = data[wrongPref][Math.floor(Math.random() * 2)];
+      if (!wrongOptions.includes(option) && option !== correct) {
+        wrongOptions.push(option);
+      }
+    }
+  }
+  let allOptions = shuffle([correct, ...wrongOptions]);
+  document.getElementById("question").innerHTML = `「${currentPref}」的特產是哪一個？<br>Which is a specialty of ${currentPref}?`;
+  document.getElementById("options").innerHTML = "";
+  allOptions.forEach(opt => {
+    let btn = document.createElement("button");
+    btn.textContent = opt;
+    btn.onclick = () => {
+      if (opt === correctAnswer) score++;
+      document.getElementById("score").textContent = `得分 / Score: ${score}`;
+      nextQuestion();
+    };
+    document.getElementById("options").appendChild(btn);
+  });
+}
+
+function startGame() {
+  interval = setInterval(() => {
+    timeLeft--;
+    document.getElementById("timer").textContent = `剩餘時間 / Time Left: ${timeLeft}`;
+    if (timeLeft <= 0) {
+      clearInterval(interval);
+      endGame();
+    }
+  }, 1000);
+  nextQuestion();
+}
+
+function endGame() {
+  document.getElementById("options").innerHTML = "";
+  document.getElementById("question").innerHTML = "遊戲結束 / Game Over";
+  let msg = "";
+  if (score <= 14) msg = "加油呦！Good luck next time!";
+  else if (score <= 30) msg = "只差一點了！Almost there!";
+  else if (score <= 46) msg = "日本名產通！Japanese Specialty Expert!";
+  else msg = "會走路的百科全書就是你！You're a walking encyclopedia!";
+  document.getElementById("result").textContent = msg;
+}
+startGame();
+</script>
+</body>
+</html>
